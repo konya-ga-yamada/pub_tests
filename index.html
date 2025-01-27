@@ -1,1 +1,47 @@
-index.html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiga Menu</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>Shiga Menu</h1>
+    <div id="menu-table"></div>
+
+    <script>
+        // CSVファイルのURL
+        const csvUrl = "https://raw.githubusercontent.com/konya-ga-yamada/pub_tests/main/shiga_menu.csv";
+
+        // CSVを取得してHTMLテーブルに変換
+        fetch(csvUrl)
+            .then(response => response.text())
+            .then(data => {
+                const parsedData = Papa.parse(data, { header: true });
+                const rows = parsedData.data;
+
+                let table = "<table border='1'><thead><tr>";
+                // ヘッダーの作成
+                Object.keys(rows[0]).forEach(key => {
+                    table += `<th>${key}</th>`;
+                });
+                table += "</tr></thead><tbody>";
+
+                // データ行の作成
+                rows.forEach(row => {
+                    table += "<tr>";
+                    Object.values(row).forEach(value => {
+                        table += `<td>${value}</td>`;
+                    });
+                    table += "</tr>";
+                });
+                table += "</tbody></table>";
+
+                // HTMLに挿入
+                document.getElementById("menu-table").innerHTML = table;
+            })
+            .catch(error => console.error("Error loading CSV:", error));
+    </script>
+</body>
+</html>
